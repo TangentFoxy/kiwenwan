@@ -1,6 +1,11 @@
 Gamestate = require "lib.gamestate"
 menu = require "states.menu"
 
+priority = "galaxy" -- set to bypass main menu
+
 love.load = ->
   Gamestate.registerEvents!
-  Gamestate.switch menu
+  if priority
+    Gamestate.switch require "states.#{priority}"
+  else
+    Gamestate.switch menu

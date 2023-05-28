@@ -11,7 +11,9 @@ menu.keypressed = (key) =>
   switch key
     when "escape"
       love.event.quit!
+    when "g"
+      Gamestate.push require "states.galaxy"
     when "t"
-      Gamestate.push(require "states.tinyclone")
+      Gamestate.push require "states.tinyclone"
 
 return menu
