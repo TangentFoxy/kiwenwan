@@ -62,6 +62,7 @@ function GS.push(to, ...)
 end
 
 function GS.pop(...)
+	if #stack < 2 then return love.event.quit() end
 	assert(#stack > 1, "No more states to pop!")
 	local pre, to = stack[#stack], stack[#stack-1]
 	stack[#stack] = nil
