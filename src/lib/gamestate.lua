@@ -96,6 +96,7 @@ function GS.registerEvents(callbacks)
 		end
 	end
 end
+local function_cache = {}
 
 -- forward any undefined functions
 setmetatable(GS, {__index = function(_, func)
@@ -103,9 +104,10 @@ setmetatable(GS, {__index = function(_, func)
 	-- (see issue #46)
 	if not state_is_dirty or func == 'update' then
 		state_is_dirty = false
-		return function(...)
-			return (stack[#stack][func] or __NULL__)(stack[#stack], ...)
+		function_cache[func] = function_cache[func] or function(...)
+		        return (stack[#stack][func] or __NULL__)(stack[#stack], ...)
 		end
+		return function_cache[func]
 	end
 	return __NULL__
 end})
