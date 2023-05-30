@@ -42,10 +42,20 @@ system_view.init = =>
   love.math.setRandomSeed os.time!
 
   system = {}
-  -- star_count = math.floor math.max 1, love.math.randomNormal 1, 2
-  star_count = 1
+  star_count = math.floor math.max 1, love.math.randomNormal 1, 2
+  -- star_count = 1
   for i = 1, star_count
+    local star
+    -- NOTE stellar as a different case does not work
+    -- if i == 1
+    --   star = Body "primary"
+    -- else
+    --   star = Body "stellar"
     star = Body "primary"
+    if i != 1
+      -- manually offsetting and ignoring the parent/child relations because LAZY
+      star.position[2] = 15 * (i - 1) * 2 + 1 * (i - 1)
+
     table.insert system, star
     planet_count = math.floor math.max 0, love.math.randomNormal 11/4, 10
     for i = 1, planet_count
