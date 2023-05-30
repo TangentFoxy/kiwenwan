@@ -2,7 +2,7 @@ Gamestate = require "lib.gamestate"
 menu = require "states.menu"
 
 -- BYPASS MAIN MENU
-priority = "system_view"
+-- priority = "system_view"
 
 love.load = ->
   Gamestate.registerEvents!
