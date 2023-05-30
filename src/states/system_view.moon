@@ -2,47 +2,35 @@ Gamestate = require "lib.gamestate"
 system_view = {}
 w, h = 960, 540
 
--- types: stellar, gaseous, rocky, icy,
-
--- class Body
---   new: (@parent, type) =>
---     @children = {}
---     if @parent
---       switch @parent.type
---         when "star"
---           planet_count = math.floor math.max 0, love.math.randomNormal 11/4, 10
---           while planet_count > 0
---             -- TODO create and add planets to ourself
---             table.insert @children, Body(@, "rocky")
---         when "gaseous" -- "and icy?"
---           -- temporarily cannot have moon moons
---           moon_count = math.floor math.max 0, love.math.randomNormal 6/4, 5
+-- types: stellar, gaseous, rocky, icy
+-- rocky can be asteroid (0.5), moon (1), planet (2-3)
+-- gaseous can be 5-7
+-- stellar can be 10-20
 
 class Body
-  new: (@parent, @type) =>
+  new: (@type) =>
+    @position = { 0, 0, 1 } -- x, y, radius
+    @children = {}
     switch @type
       when "stellar"
-        @radius = 3
+        @position[3] = 15
       when "gaseous"
-        @radius = 2
+        @position[3] = 6
       when "rocky"
-        @radius = 1
-      else
-        @radius = 1
+        @position[3] = 2
 
-  getPosition: =>
-    x, y = 0, 0
-    if @parent
-      x, y = @parent\getPosition!
-      switch @parent.type
-        when "stellar", "gaseous", "icy"
-          x += @parent.radius*2 + 1
-        when "rocky"
-          y += @parent.radius*2 + 1
-        else
-          x += @parent.radius*2 + 1
-          y += @parent.radius*2 + 1
-    return x, y
+  addChild: (child) =>
+    child.position[1] = @position[1]
+    child.position[2] = @position[2]
+    offset = @position[3] + 1 + child.position[3]
+    for body in *@children
+      offset += body.position[3] * 2 + 1
+    switch @type
+      when "stellar", "gaseous", "icy"
+        child.position[1] += offset
+      when "rocky"
+        child.position[2] += offset
+    table.insert @children, child
 
 local system
 system_view.init = =>
@@ -52,15 +40,22 @@ system_view.init = =>
   -- star_count = math.floor math.max 1, love.math.randomNormal 1, 2
   star_count = 1
   for i = 1, star_count
-    star = Body nil, "stellar"
-    -- star = { type: "star" }
+    star = Body "stellar"
     table.insert system, star
     planet_count = math.floor math.max 0, love.math.randomNormal 11/4, 10
     print "Planets: #{planet_count}"
     for i = 1, planet_count
-      -- planet = { type: "rocky", parent: star }
-      planet = Body star, "rocky"
+      local planet
+      -- planet = Body "rocky"
+      if love.math.random! < 0.7
+        planet = Body "gaseous"
+      else
+        planet = Body "rocky"
+      star\addChild planet
       table.insert system, planet
+
+  -- for body in *system
+  --   print unpack body.position
 
 system_view.enter = (previous) =>
   width, height, flags = love.window.getMode!
@@ -68,11 +63,11 @@ system_view.enter = (previous) =>
     love.window.setMode w, h
 
 system_view.draw = =>
-  love.graphics.scale 10, 10
+  scale = 5
+  love.graphics.scale scale, scale
 
   for body in *system
-    x, y = body\getPosition!
-    love.graphics.circle "fill", x, y, body.radius
+    love.graphics.circle "fill", unpack body.position
 
 system_view.keypressed = (key) =>
   switch key
