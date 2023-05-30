@@ -3,7 +3,11 @@ galaxy = {}
 w, h = 960, 540
 
 units = {
-  au: 1e-5 -- 1.58125e-5
+  au2ly: 1.58125e-5
+  ls2ly: 3.17098e-8
+  au2ls: 499.005
+  au2lm: 8.31675 -- lightminute, a good default in-system unit ?
+  pc2ly: 3.26156 -- parsec
 }
 
 range = 100
@@ -12,16 +16,21 @@ class System
   new: (@r) =>
     @rotationOffset = math.pi * 2 * love.math.random!
     @distanceOffset = love.math.randomNormal 0.26, 0
+    -- minimum distance between systems is 14000 au (2x largest system discovered irl)
     if @distanceOffset > 0.5
-      @distanceOffset = 0.5 - units.au
+      @distanceOffset = 0.5 - 7000 * units.au2ly
     elseif @distanceOffset < -0.5
-      @distanceOffset = -0.5 + units.au
+      @distanceOffset = -0.5 + 7000 * units.au2ly
 
   draw: (time) =>
     love.graphics.points @getPosition time
 
   getPosition: (time) =>
     return @r * math.cos(time/(@r + @distanceOffset) + @rotationOffset), @r * math.sin(time/(@r + @distanceOffset) + @rotationOffset)
+
+  -- this doesn't work without scale factor being part of this system instead of time itself moving slowly..
+  -- getOrbitalPeriod: (printable) =>
+  --   return math.pi * 2 / (@r + @distanceOffset)
 
 galaxy.init = =>
   love.math.setRandomSeed os.time!
