@@ -104,6 +104,9 @@ galaxy.draw = =>
   -- love.graphics.print "System selected: #{galaxy.selected.r} Nearby systems: #{systemsNearby}", 1, 1
   love.graphics.print "Speed: #{galaxy.speed}\nFastest/Slowest orbits: #{galaxy.systems[1]\getOrbitalPeriod(true)} / #{galaxy.systems[#galaxy.systems]\getOrbitalPeriod(true)}", 1, 1
 
+  fontSize = love.graphics.getFont!\getHeight!
+  love.graphics.print "esc: Exit/Return to main menu. +/-: Time control. arrows: Move camera.", 1, h - (fontSize + 1)
+
   love.graphics.translate w / 2 - camera.x, h / 2 - camera.y
 
   for system in *galaxy.systems

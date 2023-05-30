@@ -91,6 +91,8 @@ system_view.enter = (previous) =>
     love.window.setMode w, h
 
 system_view.draw = =>
+  fontSize = love.graphics.getFont!\getHeight!
+  love.graphics.print "esc: Exit/Return to main menu. g: Generate new system.", 1, h - (fontSize + 1)
   scale = 5
   love.graphics.scale scale, scale
 
