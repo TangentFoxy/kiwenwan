@@ -10,8 +10,9 @@ units = {
   pc2ly: 3.26156 -- parsec
 }
 
-range = 100
+range = 20
 
+orbitalSpeed = 0.0625
 class System
   new: (@r) =>
     @rotationOffset = math.pi * 2 * love.math.random!
@@ -26,22 +27,41 @@ class System
     love.graphics.points @getPosition time
 
   getPosition: (time) =>
-    return @r * math.cos(time/(@r + @distanceOffset) + @rotationOffset), @r * math.sin(time/(@r + @distanceOffset) + @rotationOffset)
+    argument = time * orbitalSpeed / (@r + @distanceOffset)^1.337 + @rotationOffset
+    return @r * math.cos(argument), @r * math.sin(argument)
 
-  -- this doesn't work without scale factor being part of this system instead of time itself moving slowly..
-  -- getOrbitalPeriod: (printable) =>
-  --   return math.pi * 2 / (@r + @distanceOffset)
+  getOrbitalPeriod: (printable) =>
+    period = math.pi * 2 * (@r + @distanceOffset)^1.337 / orbitalSpeed
+    if printable
+      output = "s"
+      if period > 60
+        period /= 60
+        output = "min"
+        if period > 60
+          period /= 60
+          output = "hr"
+          if period > 24
+            period /= 24
+            output = " days"
+            if period > 7
+              period /= 7
+              output = " weeks"
+      return tostring(period) .. output
+    return period
 
 galaxy.init = =>
   love.math.setRandomSeed os.time!
   galaxy.time = os.time!
-  galaxy.speed = 0.03125
+  galaxy.speed = 1
 
-  -- galaxy.size = math.sqrt(w*w + h*h) / 2
-  galaxy.size = 2000
+  galaxy.size = math.sqrt(w*w + h*h) / 2
+  -- galaxy.size = 2000
   galaxy.systems = {}
   for i = 1, galaxy.size
     table.insert galaxy.systems, System i
+
+  -- temporary testing periods of distant orbits
+  -- table.insert galaxy.systems, System 10000
 
   galaxy.selected = galaxy.systems[1 + math.floor love.math.random! * #galaxy.systems]
   -- galaxy.selected = galaxy.systems[1]
@@ -81,15 +101,14 @@ galaxy.draw = =>
   --   galaxy.selected = galaxy.systems[r + 1]
 
   size = 10000 -- random estimated "max" size
-  love.graphics.print "Speed: #{galaxy.speed}\nFastest/Slowest full rotations: #{math.pi*2/galaxy.speed/60} min/#{math.pi*2/galaxy.speed*size/60/60/24} days\nSystem selected: #{galaxy.selected.r} Nearby systems: #{systemsNearby}", 1, 1
+  -- love.graphics.print "System selected: #{galaxy.selected.r} Nearby systems: #{systemsNearby}", 1, 1
+  love.graphics.print "Speed: #{galaxy.speed}\nFastest/Slowest orbits: #{galaxy.systems[1]\getOrbitalPeriod(true)} / #{galaxy.systems[#galaxy.systems]\getOrbitalPeriod(true)}", 1, 1
 
   love.graphics.translate w / 2 - camera.x, h / 2 - camera.y
 
   for system in *galaxy.systems
     system\draw galaxy.time
 
-  -- x, y = galaxy.selected\getPosition galaxy.time
-  -- love.graphics.rectangle "line", x - range, y - range, 100, 100
   love.graphics.circle "line", x, y, range
 
   -- generate lines network
@@ -114,7 +133,5 @@ galaxy.keypressed = (key) =>
     when "d"
       for k,v in pairs output
         print k,v
-    -- when "up"
-    --   camera.y -= 10
 
 return galaxy
