@@ -54,7 +54,7 @@ galaxy.init = =>
   galaxy.time = os.time!
   galaxy.speed = 1
 
-  galaxy.size = math.sqrt(w*w + h*h) / 2
+  galaxy.size = math.sqrt(w * w + h * h) / 2
   -- galaxy.size = 2000
   galaxy.systems = {}
   for i = 1, galaxy.size
@@ -100,7 +100,6 @@ galaxy.draw = =>
   -- if r < galaxy.size - 101
   --   galaxy.selected = galaxy.systems[r + 1]
 
-  size = 10000 -- random estimated "max" size
   -- love.graphics.print "System selected: #{galaxy.selected.r} Nearby systems: #{systemsNearby}", 1, 1
   love.graphics.print "Speed: #{galaxy.speed}\nFastest/Slowest orbits: #{galaxy.systems[1]\getOrbitalPeriod(true)} / #{galaxy.systems[#galaxy.systems]\getOrbitalPeriod(true)}", 1, 1
 
