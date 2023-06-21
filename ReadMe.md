@@ -9,6 +9,12 @@ This *monolith* is an easy way for me to cross-pollinate ideas and prototypes in
 - system_view: A simplified system map viewer. To be filled with information someday.
 - tinyclone: Nothing yet. Inspired by [Tiny Space Program](https://play.google.com/store/apps/details?id=com.companyname.Space_Program).
 
+## Inspirations
+
+- [Bussard](https://technomancy.itch.io/bussard) is "A space flight programming adventure game." similar to what I desire to make. Development stalled on it, but what exists is fun to play regardless.
+- [Oolite](https://www.oolite.space/) is an open source reimplementation of the original Elite.
+- [Transcendence](https://transcendence.kronosaur.com/). This game is formative, I played it in high school. (I've heard [Endless Sky](https://endless-sky.github.io/) and [Destination Sol](https://destinationsol.org/) are similar.)
+
 ## Libraries Used
 
 - ftcsv: CSV parser/encoder. [From here](https://github.com/FourierTransformer/ftcsv).
