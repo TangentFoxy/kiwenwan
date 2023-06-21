@@ -7,6 +7,10 @@ tinyclone.enter = (previous) =>
   if width != w or height != h
     love.window.setMode w, h
 
+tinyclone.draw = =>
+  fontSize = love.graphics.getFont!\getHeight!
+  love.graphics.print "esc: Exit/Return to main menu.", 1, h - (fontSize + 1)
+
 tinyclone.keypressed = (key) =>
   switch key
     when "escape"
