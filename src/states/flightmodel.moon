@@ -20,16 +20,13 @@ class Body
     
   draw: (time) =>
     x, y = @getPosition(time)
-    -- x, y = 0, 0 unless x and y
     love.graphics.setColor @color
     love.graphics.circle "fill", x, y, @bodyRadius
     love.graphics.setColor { 1, 1, 1, 1 } -- temporary, want everything to just set its color
 
   getPosition: (time) =>
     argument = time * orbitalSpeed / @orbitalRadius^1.337 + @rotationOffset
-    -- print argument
-    -- argument = 0 if argument != argument
-    argument = 0 if argument >= math.huge
+    argument = 0 if (argument > math.huge) or (argument != argument)
     return @orbitalRadius * math.cos(argument), @orbitalRadius * math.sin(argument)
 
 class Ship
@@ -53,8 +50,7 @@ class Ship
       else
         x, y = 0, 0
       argument = (time - @timeOffset) * orbitalSpeed / @orbitalRadius^1.337 + @rotationOffset
-      -- argument = time
-      argument = 0 if argument >= math.huge
+      argument = 0 if (argument > math.huge) or (argument != argument)
       return x + @orbitalRadius * math.cos(argument), y + @orbitalRadius * math.sin(argument)
     else
       return @x, @y
@@ -67,7 +63,6 @@ flightmodel.init = =>
   -- todo generate bodies
   flightmodel.bodies = {}
   table.insert(flightmodel.bodies, Body(0, 25))
-  -- print flightmodel.bodies[1]\getPosition(5)
   for i=1, 10
     table.insert flightmodel.bodies, Body(love.math.random! * 200 + 100, love.math.random! * 4 + 1)
 
@@ -130,7 +125,6 @@ flightmodel.keypressed = (key) =>
         flightmodel.ship.orbitalRadius = math.sqrt(flightmodel.ship.x^2 + flightmodel.ship.y^2)
         flightmodel.ship.rotationOffset = math.atan2(flightmodel.ship.y, flightmodel.ship.x)
         flightmodel.ship.timeOffset = flightmodel.time
-        -- argument = time * orbitalSpeed / @orbitalRadius^1.337 + @rotationOffset
         flightmodel.ship.orbiting = true
 
 return flightmodel
