@@ -26,7 +26,7 @@ class Body
 
   getPosition: (time) =>
     argument = time * orbitalSpeed / @orbitalRadius^1.337 + @rotationOffset
-    argument = 0 if (argument > math.huge) or (argument != argument)
+    argument = 0 if (argument >= math.huge) or (argument != argument)
     return @orbitalRadius * math.cos(argument), @orbitalRadius * math.sin(argument)
 
 class Ship
