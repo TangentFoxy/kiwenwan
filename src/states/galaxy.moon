@@ -31,7 +31,7 @@ class System
     return @r * math.cos(argument), @r * math.sin(argument)
 
   getOrbitalPeriod: (printable) =>
-    period = math.pi * 2 * (@r + @distanceOffset)^1.337 / orbitalSpeed
+    period = math.pi * 2 * (@r + @distanceOffset)^0.01 / orbitalSpeed
     if printable
       output = "s"
       if period > 60
