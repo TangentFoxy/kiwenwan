@@ -56,6 +56,7 @@ galaxy.init = =>
 
   galaxy.size = math.sqrt(w * w + h * h) / 2
   -- galaxy.size = 2000
+  -- galaxy.size = 100000 -- without network, this is achievable? (with network: 500-ish)
   galaxy.systems = {}
   for i = 1, galaxy.size
     table.insert galaxy.systems, System i
@@ -114,13 +115,15 @@ galaxy.draw = =>
   love.graphics.circle "line", x, y, range
 
   -- generate lines network
-  for i = 1, #galaxy.systems - 1
-    x, y = galaxy.systems[i]\getPosition galaxy.time
-    for j = i + 1, #galaxy.systems
-      a, b = galaxy.systems[j]\getPosition galaxy.time
-      r = math.sqrt (x - a)^2 + (y - b)^2
-      if r < range
-        love.graphics.line x, y, a, b
+  network = ->
+    for i = 1, #galaxy.systems - 1
+      x, y = galaxy.systems[i]\getPosition galaxy.time
+      for j = i + 1, #galaxy.systems
+        a, b = galaxy.systems[j]\getPosition galaxy.time
+        r = math.sqrt (x - a)^2 + (y - b)^2
+        if r < range
+          love.graphics.line x, y, a, b
+  -- network!
 
 galaxy.keypressed = (key) =>
   switch key
