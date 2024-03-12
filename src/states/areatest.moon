@@ -24,7 +24,7 @@ areatest.init = =>
   count = math.floor math.pi * radius^2 * 2.03e-3 / 1.95       -- area * density of systems
   -- TODO add reduction here for galactic halo addition
   count = math.floor love.math.randomNormal radius^0.51, count -- varrying the density a little randomly sounds fun :3
-  print "#{count} systems will be generated"
+  print "#{count} systems will be generated (within #{radius}ly)"
 
   rings = {}
   -- created as needed now (but table.sort hates this)
@@ -45,10 +45,10 @@ areatest.init = =>
     rings[r3] += 1
 
   -- I think density should be close to double in the bulge area
-  radius2 = radius / love.math.randomNormal 0.1, 10
-  count2 = math.floor math.pi * radius2^2 * 2.03e-3 / 2.05
+  radius2 = radius / love.math.randomNormal 0.1, 6.67
+  count2 = math.floor math.pi * radius2^2 * 2.03e-3
   count2 = math.floor love.math.randomNormal radius2^0.49, count2
-  print "#{count2} extra systems in the bulge"
+  print "#{count2} extra systems in the bulge (radius: #{radius2})"
   for i = 1, count2
     t = love.math.random! * math.pi * 2
     u = love.math.random! + love.math.random!
@@ -61,7 +61,26 @@ areatest.init = =>
     rings[r3] = 0 if not rings[r3]
     rings[r3] += 1
 
-  total_count = count + count2
+  -- let's add a very sparsely populated halo :D
+  radius3 = radius + radius * math.abs love.math.randomNormal 0.1, 0.5
+  for i = 0, math.floor(radius3) + 1 -- hopefully this unbreaks our sorting attempt..
+    rings[i] = 0 if not rings[i]
+  count3 = math.floor math.pi * radius3^2 * 2.03e-5
+  count3 = math.floor love.math.randomNormal radius3^0.49, count3
+  print "#{count3} extra systems in the halo (radius: #{radius3})"
+  for i = 1, count3
+    t = love.math.random! * math.pi * 2
+    u = love.math.random! + love.math.random!
+    r = u
+    r2 = r * radius3
+    x, y = r2 * math.cos(t), r2 * math.sin(t)
+    table.insert(systems, {:x, :y, r: r2, a: t})
+    r3 = math.floor r2
+    rings[r3] = 0 if not rings[r3]
+    rings[r3] += 1
+
+  -- total_count = count + count2
+  total_count = count + count2 + count3
 
   export max_ring, which_ring = 0, -1 -- fucking ridiculously lazy :D
   if export_data
@@ -82,10 +101,37 @@ areatest.init = =>
   -- NOTE in the future, we need to check for systems within a ly of each other (in initial state) and delete the last one from each pair
   --   loading process can be sped up on subsequent generations of a galaxy by caching removed system IDs
 
-  table.sort(rings)
+  for i = 0, math.floor(radius3) + 1
+    if not rings[i]
+      rings[i] = 0
+    -- print rings[i]
+
+  -- table.sort(rings, (...) ->
+  --   arguments = {...}
+  --   for k,v in pairs(arguments)
+  --     print k, v
+  --   return true)
+
+  -- table.sort(rings, () -> return true)
+  -- max_systems_displayed = 0
+  -- for i = 1, 1102 -- maximum number of rings possible at zoom level 1
+  --   max_systems_displayed += rings[i]
+
   max_systems_displayed = 0
-  for i = 1, 1102 -- maximum number of rings possible at zoom level 1
-    max_systems_displayed += rings[i]
+  for i = 1, 1102 -- 960x540 window rings possible to see
+    highest_found = 0
+    local highest_found_index
+    stupid_fn = ->
+      for j = math.floor(radius3) + 1, 0, -1
+        ring = rings[j]
+        if ring and ring > highest_found
+          highest_found = ring
+          highest_found_index = j
+          break
+    stupid_fn!
+    table.remove rings, highest_found_index
+    max_systems_displayed += highest_found
+    highest_found = 0
   print "#{max_systems_displayed} systems might have to be displayed at once (estimate)"
 
   -- distribution of multi-star systems experiment
@@ -116,7 +162,7 @@ areatest.draw = =>
   love.graphics.print "Radius #{which_ring} has #{max_ring} systems.", 1, h - (fontSize + 1) * 2
 
   love.graphics.translate w / 2, h / 2
-  -- love.graphics.scale 0.06
+  -- love.graphics.scale 0.1 -- 0.02 to see halo, 0.06 for just disk, 0.1 makes the bulge noticeable
   for system in *systems
     love.graphics.points system.x, system.y
 
