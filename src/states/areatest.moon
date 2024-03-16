@@ -4,10 +4,11 @@ w, h = 960, 540
 
 export_data = false
 
+-- all of this really should be in an init function
 systems = {}
 areatest.init = =>
   seed = os.time!
-  print seed
+  print "Seed: #{seed}"
   -- an exceedingly rare combination arises from the seed 1710196022 (no 8s, a 9, a 10)
   love.math.setRandomSeed seed
   radius = love.math.randomNormal 25, 4500
