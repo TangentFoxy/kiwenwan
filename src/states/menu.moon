@@ -19,6 +19,7 @@ menu.enter = (previous) =>
     if item\find ".+%.lua$" -- if it's a Lua file
       item = item\sub 1, -5
       unless ignored_states[item]
+        -- TODO make it generate a unique key if the appropriate one is already taken
         menu.states[item\sub 1, 1] = item
         menu.text ..= "Press \"#{item\sub 1, 1}\" for #{item}\n"
 
