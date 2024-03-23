@@ -4,14 +4,15 @@ w, h = 960, 540
 
 export_data = false
 
--- all of this really should be in an init function
 systems = {}
+system_colors = {}
 areatest.init = =>
   seed = os.time!
   print "Seed: #{seed}"
   -- an exceedingly rare combination arises from the seed 1710196022 (no 8s, a 9, a 10)
   love.math.setRandomSeed seed
   radius = love.math.randomNormal 25, 4500
+  -- radius = radius * 1.15 -- I will adjust the starting point larger later, because more is being removed
   -- 0.0048 seems to work okay for a "near-Earth" vibe?
   -- 2.03e-5 is based on taking a slice of the milky way, and generates ~63 systems / kly (at 50kly total radius)
   --   160k stars for the "complate" galaxy, which would equate to 1.6e8 stars 'at proper volume', which is still far under the true number
@@ -38,6 +39,10 @@ areatest.init = =>
     u = love.math.random! + love.math.random!
     r = u
     r = 2 - u if u > 1
+    if love.math.random! > 1 - 0.0567 * r - 0.933 * r^2
+    -- if love.math.random! > 1 - 0.453 * r - 0.546 * r^2 (too dramatic?)
+    -- if love.math.random! > 1 -1.31 * r + 0.312 * r^2 -- (I like this IF ONLY THE RADIUS IS LARGER BY 15%)
+      continue
     r2 = r * radius
     x, y = r2 * math.cos(t), r2 * math.sin(t)
     table.insert(systems, {:x, :y, r: r2, a: t})
@@ -152,18 +157,46 @@ areatest.init = =>
   for k, v in pairs star_counts
     print("#{v} star systems will have #{k} stars")
 
+  system_colors = {}
+  -- O, B, A, F, G, K, M L
+  system_rarities = {
+    O: 0.00003
+    B: 0.13
+    A: 0.6
+    F: 3
+    G: 7.6
+    K: 12.1
+    M: 76.45
+    L: 0.11
+  }
+  for system in *systems
+    -- x, y, r, a
+    -- choose a color and assign (place it in the system_colors table)
+    nil
+
 areatest.enter = (previous) =>
   width, height, flags = love.window.getMode!
   if width != w or height != h
     love.window.setMode w, h
 
+colors = {
+  O: {0.521, 0.521, 0.996, 1}
+  B: {0.701, 0.898, 1, 1}
+  A: {1, 1, 1, 1}
+  F: {1, 0.996, 0.780, 1}
+  G: {0.988, 0.972, 0.250, 1}
+  K: {0.905, 0.549, 0.015, 1}
+  M: {0.847, 0.011, 0.031, 1}
+  L: {0.302, 0.187, 0.177, 1}
+}
+scale, scale_opts = 1, {0.1, 0.02, 0.06}
 areatest.draw = =>
   fontSize = love.graphics.getFont!\getHeight!
   love.graphics.print "esc: Exit/Return to main menu.", 1, h - (fontSize + 1)
   love.graphics.print "Radius #{which_ring} has #{max_ring} systems.", 1, h - (fontSize + 1) * 2
 
   love.graphics.translate w / 2, h / 2
-  -- love.graphics.scale 0.1 -- 0.02 to see halo, 0.06 for just disk, 0.1 makes the bulge noticeable
+  love.graphics.scale scale_opts[scale] -- 0.02 to see halo, 0.06 for just disk, 0.1 makes the bulge noticeable
   for system in *systems
     love.graphics.points system.x, system.y
 
@@ -171,5 +204,8 @@ areatest.keypressed = (key) =>
   switch key
     when "escape"
       Gamestate.pop!
+    when "s"
+      scale += 1
+      scale = 1 if scale > #scale_opts
 
 return areatest
