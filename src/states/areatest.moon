@@ -1,4 +1,6 @@
 Gamestate = require "lib.gamestate"
+lume = require "lib.lume"
+
 areatest = {}
 w, h = 960, 540
 
@@ -159,20 +161,27 @@ areatest.init = =>
 
   system_colors = {}
   -- O, B, A, F, G, K, M L
-  system_rarities = {
-    O: 0.00003
+  system_rarities = { -- NOTE these rarities need to eventually be per star, not per system
+    O: 0.01 -- 0.00003% in halo, 0.003% in disk, 0.01% in core (& mk sure > 0 at end of generation)
     B: 0.13
     A: 0.6
     F: 3
     G: 7.6
     K: 12.1
     M: 76.45
-    L: 0.11
+    L: 0.11 -- do 30% in halo, 18% in disk, 0.11% in core
   }
+  for system_type in pairs system_rarities
+    system_colors[system_type] = {}
   for system in *systems
-    -- x, y, r, a
-    -- choose a color and assign (place it in the system_colors table)
-    nil
+    system_type = lume.weightedchoice system_rarities
+    table.insert system_colors[system_type], system
+  
+  total_systems = #systems
+  for key, systems_type in pairs system_colors
+    count = #systems_type
+    percentage = count / total_systems
+    print "#{key}: #{percentage * 100}% (#{count}/#{total_systems}) (intended: #{system_rarities[key]}%)"
 
 areatest.enter = (previous) =>
   width, height, flags = love.window.getMode!
@@ -192,13 +201,17 @@ colors = {
 scale, scale_opts = 1, {0.1, 0.02, 0.06}
 areatest.draw = =>
   fontSize = love.graphics.getFont!\getHeight!
+  love.graphics.setColor 1, 1, 1, 1
   love.graphics.print "esc: Exit/Return to main menu.", 1, h - (fontSize + 1)
   love.graphics.print "Radius #{which_ring} has #{max_ring} systems.", 1, h - (fontSize + 1) * 2
 
   love.graphics.translate w / 2, h / 2
   love.graphics.scale scale_opts[scale] -- 0.02 to see halo, 0.06 for just disk, 0.1 makes the bulge noticeable
-  for system in *systems
-    love.graphics.points system.x, system.y
+
+  for key, system_type in pairs system_colors
+    love.graphics.setColor colors[key]
+    for system in *system_type
+      love.graphics.points system.x, system.y
 
 areatest.keypressed = (key) =>
   switch key
