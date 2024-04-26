@@ -32,7 +32,9 @@ areatest.init = =>
 
   rings = {}
   -- created as needed now (but table.sort hates this)
-  for i = 0, radius + 1 -- intentionally including out of scope by 1 in case I messed up the scope
+  -- for i = 0, radius + 1 -- intentionally including out of scope by 1 in case I messed up the scope
+  --   rings[i] = 0
+  for i = 0, 100000 -- intentionally rediculous, so that there can't possibly be nil elements (should never need to be above 10k)
     rings[i] = 0
 
   for i = 1, count
@@ -109,37 +111,15 @@ areatest.init = =>
   -- NOTE in the future, we need to check for systems within a ly of each other (in initial state) and delete the last one from each pair
   --   loading process can be sped up on subsequent generations of a galaxy by caching removed system IDs
 
-  for i = 0, math.floor(radius3) + 1
-    if not rings[i]
-      rings[i] = 0
-    -- print rings[i]
-
-  -- table.sort(rings, (...) ->
-  --   arguments = {...}
-  --   for k,v in pairs(arguments)
-  --     print k, v
-  --   return true)
-
-  -- table.sort(rings, () -> return true)
-  -- max_systems_displayed = 0
-  -- for i = 1, 1102 -- maximum number of rings possible at zoom level 1
-  --   max_systems_displayed += rings[i]
-
   max_systems_displayed = 0
-  for i = 1, 1102 -- 960x540 window rings possible to see
-    highest_found = 0
-    local highest_found_index
-    stupid_fn = ->
-      for j = math.floor(radius3) + 1, 0, -1
-        ring = rings[j]
-        if ring and ring > highest_found
-          highest_found = ring
-          highest_found_index = j
-          break
-    stupid_fn!
-    table.remove rings, highest_found_index
-    max_systems_displayed += highest_found
-    highest_found = 0
+  -- table.sort rings, (a, b) ->
+  --   return false if a == nil
+  --   return true if b == nil
+  --   return a > b
+  table.sort rings
+  for i = 1, 1102 -- zoom level 1 max distance displayed
+    max_systems_displayed += rings[i]
+
   print "#{max_systems_displayed} systems might have to be displayed at once (estimate)"
 
   -- distribution of multi-star systems experiment
@@ -176,7 +156,7 @@ areatest.init = =>
   for system in *systems
     system_type = lume.weightedchoice system_rarities
     table.insert system_colors[system_type], system
-  
+
   total_systems = #systems
   for key, systems_type in pairs system_colors
     count = #systems_type
