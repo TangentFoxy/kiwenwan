@@ -116,7 +116,7 @@ areatest.init = =>
   --   return false if a == nil
   --   return true if b == nil
   --   return a > b
-  table.sort rings
+  table.sort rings, (a, b) -> a > b
   for i = 1, 1102 -- zoom level 1 max distance displayed
     max_systems_displayed += rings[i]
 
