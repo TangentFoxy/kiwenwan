@@ -1,3 +1,4 @@
 **/.DS_Store
 *.lua
 !src/lib/**/*.lua
+Slab.ini
