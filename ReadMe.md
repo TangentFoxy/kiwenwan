@@ -24,3 +24,4 @@ This *monolith* is an easy way for me to cross-pollinate ideas and prototypes in
 - json.lua: JSON parser/encoder. [From here](https://github.com/rxi/json.lua).
 - lovebird: Browser-based debug console. [From here](https://github.com/rxi/lovebird).
 - lume: Gamedev utility functions. [From here](https://github.com/TangentFoxy/lume).
+- dkjson: JSON parser/encoder. Produces readible output. [From here](https://github.com/TangentFoxy/dkjson.lua).
