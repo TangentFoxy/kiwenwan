@@ -23,3 +23,4 @@ This *monolith* is an easy way for me to cross-pollinate ideas and prototypes in
   Currently maintained [here](https://github.com/HDictus/hump) ([docs](https://github.com/HDictus/hump/blob/temp-master/docs/gamestate.rst)). My version [is modified](https://github.com/TangentFoxy/kiwenwan/commit/0bf48908b21f25addf04ab197c6e807790da0512).
 - json.lua: JSON parser/encoder. [From here](https://github.com/rxi/json.lua).
 - lovebird: Browser-based debug console. [From here](https://github.com/rxi/lovebird).
+- lume: Gamedev utility functions. [From here](https://github.com/TangentFoxy/lume).
