@@ -5,8 +5,18 @@ This *monolith* is an easy way for me to cross-pollinate ideas and prototypes in
 
 ## Prototypes
 
+- 2d-map: Tile map experiment.
+- 3rd-dimension: g3d demo.
+- areatest: Another galaxy generator, with different sections of system density.
+- buildmass: An experiment in mass-accumulation simulation to devise "realistic" star systems.
+- colortest: Star colors?
+- flightmodel: A space navigation experiment.
 - galaxy: A dynamic generative galaxy, to be turned into a map for warp travel between star systems. Based entirely on time and procedural generation.
+- lynx_testing: Testing the lynx UI library.
+- menu: A menu for selecting which prototype to open.
+- slab_testing: Testing Slab UI library. (NOTE: Not my slab library, someone else's.)
 - system_view: A simplified system map viewer. To be filled with information someday.
+- TEMPLATE: A template for making more prototypes.
 - tinyclone: Nothing yet. Inspired by [Tiny Space Program](https://play.google.com/store/apps/details?id=com.companyname.Space_Program).
 
 ## Inspirations
