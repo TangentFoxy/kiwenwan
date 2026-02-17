@@ -1,0 +1,17 @@
+volume of milky way: 5.4515e14 ly3
+volume of milky way disk only: 8e12 ly3
+stars in milky way: 3e11
+radius of milky way: 50000 ly
+thickness of milky way disk: 1000 ly
+area of milky way disk: 7.854e9 ly2
+volume of milky way disk: 7.854e12 ly3
+radius of milky way bulge: 7500 ly
+volume of milky way bulge: 1.76e12 ly3
+volume of milky way (excluding halo): 9.514e12
+volume of milky way halo: 5.3554e14
+stellar density of milky way (excluding halo): 0.03153 stars/ly3
+stellar density near earth: 0.04 stars/ly3
+stellar density in milky way bulge: 0.08 stars/ly3
+est. stars in milky way bulge: 1.408e11
+est. stars in milky way disk (ignoring stars in halo): 1.592e11
+est. stellar density in milky way disk: 0.0203 stars/ly3
